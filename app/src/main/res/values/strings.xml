@@ -1,0 +1,43 @@
+<resources>
+    <string name="app_name">Liste de courses</string>
+    <string name="action_settings">Settings</string>
+    <string name="text_message_hint">Votre message...</string>
+    <string name="btn_envoyer">Envoyer</string>
+    <string name="btn_modifier">Modifier</string>
+    <string name="btn_cancel">Annuler</string>
+    <string name="btn_confirmer">Confirmer</string>
+    <string name="title_activity_confirmation">My application</string>
+    <string name="textview_confirmation"><b>Voulez-vous vraiment envoyer le message ?</b></string>
+    <string name="recapitulatif_text"></string>
+    <string name="textview_list"></string>
+    <string name="chercher">Rechercher</string>
+    <string name="search_hint">Rechercher...</string>
+    <string name="charcuterie">Charcuterie</string>
+    <string name="boisson">Boisson</string>
+    <string name="cereales">Céréales</string>
+    <string name="navigation_drawer_open">Mal voyant 1</string>
+    <string name="navigation_drawer_close">Mal voyant 2</string>
+    <string name="android_studio">Android Studio</string>
+    <string name="supprimer">Supprimer</string>
+    <string name="la_categorie">La catégorie</string>
+    <string name="categorie_label">Catégorie : </string>
+    <string name="categorie_notif">Boisson</string>
+    <string name="notification">Notification</string>
+    <string name="notif_nouv_message">Passer au marché pour remplir le refrigerateur</string>
+    <string name="choisir_alarme">Choississez le temps de la notification</string>
+    <string name="quinze_minutes">15 minutes</string>
+    <string name="cinq_minutes">5 minutes</string>
+    <string name="une_minute">1 minute</string>
+    <string name="programmer_aller_marche">Programmer pour aller au marché</string>
+    <string name="programmer_ajout_produit">Programmer pour ajouter un produit</string>
+    <string name="programmation_ajout_produit_title">Le produit a bien été ajouté</string>
+    <string name="programmation_ajout_produit_content">Le produit a été enregistré</string>
+    <string name="localisation">Localisation</string>
+    <string name="longitude">Longitude</string>
+    <string name="latitude">Latitude</string>
+    <string name="altitude">Altitude</string>
+    <string name="appel">Partager</string>
+    <string name="envoyer_sms">Envoyer un SMS</string>
+    <string name="actualisation">Actualisation</string>
+
+</resources>

@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8"?>
+    <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+              package="myapplication10.com.listedecoursessynchronise3">
+
+        <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"></uses-permission>
+        <uses-permission android:name="android.permission.INTERNET"></uses-permission>
+        <uses-permission android:name="android.permission.WAKE_LOCK"></uses-permission>
+        <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"></uses-permission>
+        <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"></uses-permission>
+        <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"></uses-permission>
+        <uses-permission android:name="android.permission.CALL_PHONE"></uses-permission>
+
+
+        <application
+                android:allowBackup="true"
+                android:icon="@mipmap/ic_launcher"
+                android:label="@string/app_name"
+                android:roundIcon="@mipmap/ic_launcher_round"
+                android:supportsRtl="true"
+                android:theme="@style/AppTheme">
+
+            <activity
+                    android:name=".MainActivity"
+                    android:label="@string/app_name"
+                    android:theme="@style/AppTheme.NoActionBar"
+                    android:launchMode="singleTask"
+                    android:taskAffinity=""
+                    android:excludeFromRecents="true">
+
+                    <intent-filter>
+                        <action android:name="android.intent.action.MAIN"/>
+                        <category android:name="android.intent.category.LAUNCHER"/>
+                    </intent-filter>
+                    <meta-data android:name="android.app.default_searchable"
+                           android:value=".RechercherActivity">
+
+                </meta-data>
+            </activity>
+            <activity
+                    android:name=".DetailActivity"
+                    android:label="@string/app_name"
+            ></activity>
+            <activity
+                    android:name=".ModifierActivity"
+                    android:label="@string/app_name"
+            ></activity>
+            <activity
+                    android:name=".NouveauActivity"
+                    android:label="@string/app_name"
+            ></activity>
+            <activity
+                    android:name=".RechercherActivity"
+                    android:label="@string/app_name"
+            >
+                <intent-filter>
+                    <action android:name="android.intent.action.SEARCH" />
+                </intent-filter>
+                <meta-data android:name="android.app.searchable"
+                    android:resource="@xml/searchable" />
+                <meta-data android:name="android.app.default_searchable"
+                           android:value=".RechercherActivity">
+
+                </meta-data>
+
+            </activity>
+
+            <activity
+                    android:name=".NotificationActivity"
+                    android:label="@string/app_name"
+            ></activity>
+
+            <activity
+                    android:name=".CategorieActivity"
+                    android:label="@string/app_name"
+            ></activity>
+
+            <activity
+                    android:name=".AppelActivity"
+                    android:label="@string/app_name"
+            ></activity>
+
+
+            <activity
+                    android:name=".ProgrammationAjoutActivity"
+                    android:label="@string/app_name" ></activity>
+            <activity
+                    android:name=".LocalisationActivity"
+                    android:label="@string/app_name" ></activity>
+
+            <activity
+                    android:name=".ActualisationActivity"
+                    android:label="@string/app_name"
+            ></activity>
+
+            <receiver android:name=".AlarmReceiver"></receiver>
+
+            <receiver android:name=".AlarmAjoutReceiver"></receiver>
+
+            <receiver android:name=".BatterieReceiver">
+                <intent-filter>
+                    <action android:name="android.intent.action.BATTERY_LOW"/>
+                    <action android:name="android.intent.action.BATTERY_OKAY"/>
+                </intent-filter>
+            </receiver>
+
+            <receiver android:name=".ConnectionReceiver" android:exported="false">
+                <intent-filter>
+                    <action android:name="android.net.wifi.NETWORK_STATE_CHANGED_ACTION" />
+                </intent-filter>
+            </receiver>
+
+            <service android:name=".MonService"
+                     android:permission="android.permission.BIND_JOB_SERVICE"
+                     android:exported="false"/>
+        </application>
+    </manifest>

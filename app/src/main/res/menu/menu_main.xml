@@ -1,0 +1,49 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:app="http://schemas.android.com/apk/res-auto"
+      xmlns:tools="http://schemas.android.com/tools"
+      tools:context="myapplication9.com.listedecourses2.MainActivity">
+
+    <item android:id="@+id/action_settings"
+          android:title="@string/action_settings"
+          android:orderInCategory="100"
+          app:showAsAction="never"/>
+
+    <item android:id="@+id/actualisation"
+          android:title="@string/actualisation"
+          android:orderInCategory="100"
+          app:showAsAction="never"/>
+
+    <item android:id="@+id/appel"
+          android:title="@string/appel"
+          android:orderInCategory="100"
+          app:showAsAction="never"/>
+
+    <!--<item android:id="@+id/localisation"
+          android:title="@string/localisation"
+          android:orderInCategory="100"
+          app:showAsAction="never"/>-->
+
+    <item android:id="@+id/programmer_aller_marche"
+          android:title="@string/programmer_aller_marche"
+          android:orderInCategory="100"
+          app:showAsAction="never"/>
+
+    <item android:id="@+id/programmer_ajout_produit"
+          android:title="@string/programmer_ajout_produit"
+          android:orderInCategory="100"
+          app:showAsAction="never"/>
+
+    <item android:id="@+id/action_search"
+          android:title="@string/chercher"
+          android:icon="@drawable/ic_search_white_24dp"
+          app:showAsAction="always|collapseActionView"
+          app:actionViewClass="android.support.v7.widget.SearchView"
+            />
+
+    <item android:id="@+id/action_supprimer"
+          android:title="@string/supprimer"
+          android:icon="@drawable/baseline_delete_white_24dp"
+          app:showAsAction="always|collapseActionView"
+          app:actionViewClass="android.support.v7.widget.SearchView"
+    />
+</menu>

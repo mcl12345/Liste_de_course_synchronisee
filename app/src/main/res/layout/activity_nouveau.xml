@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                                             xmlns:app="http://schemas.android.com/apk/res-auto" xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+                                             android:layout_height="match_parent">
+
+    <EditText
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:inputType="textPersonName"
+            android:hint="Produit"
+            android:ems="10"
+            android:id="@+id/ajouter_contenu_et" android:layout_marginTop="8dp"
+            app:layout_constraintTop_toTopOf="parent"
+            android:layout_marginStart="8dp" app:layout_constraintStart_toStartOf="parent"
+            android:layout_marginBottom="8dp" app:layout_constraintBottom_toTopOf="@+id/ajouter_btn"
+            android:layout_marginEnd="8dp" app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.687" app:layout_constraintVertical_bias="0.06"/>
+    <Button
+            android:text="Ajouter"
+            android:layout_width="274dp"
+            android:layout_height="64dp"
+            android:id="@+id/ajouter_btn"
+            app:layout_constraintStart_toStartOf="parent"
+            android:layout_marginStart="60dp"
+            android:layout_marginBottom="92dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginEnd="8dp" app:layout_constraintHorizontal_bias="0.513"/>
+    <EditText
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:inputType="textPersonName"
+            android:hint="0"
+            android:ems="10"
+            android:id="@+id/ajouter_quantite_et" android:layout_marginTop="8dp"
+            app:layout_constraintTop_toBottomOf="@+id/ajouter_contenu_et" android:layout_marginBottom="8dp"
+            app:layout_constraintBottom_toTopOf="@+id/ajouter_btn" android:layout_marginStart="8dp"
+            app:layout_constraintStart_toStartOf="parent" android:layout_marginEnd="8dp"
+            app:layout_constraintEnd_toEndOf="parent" app:layout_constraintHorizontal_bias="0.673"
+            app:layout_constraintVertical_bias="0.044"/>
+    <TextView
+            android:text="Quantité : "
+            android:layout_width="111dp"
+            android:layout_height="66dp"
+            android:id="@+id/textView2" app:layout_constraintEnd_toStartOf="@+id/ajouter_quantite_et"
+            android:layout_marginEnd="8dp" app:layout_constraintStart_toStartOf="parent"
+            android:layout_marginStart="8dp" app:layout_constraintHorizontal_bias="0.715"
+            android:layout_marginTop="36dp"
+            app:layout_constraintTop_toBottomOf="@+id/ajouter_contenu_et"/>
+
+    <RadioGroup
+            android:layout_width="354dp"
+            android:layout_height="350dp"
+            android:layout_marginTop="8dp"
+            android:orientation="vertical"
+            app:layout_constraintTop_toBottomOf="@+id/ajouter_quantite_et"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginEnd="8dp"
+            app:layout_constraintStart_toStartOf="parent"
+            android:layout_marginStart="8dp"
+            android:layout_marginBottom="8dp"
+            app:layout_constraintBottom_toTopOf="@+id/ajouter_btn"
+            app:layout_constraintVertical_bias="0.453">
+
+        <RadioButton
+                android:text="Charcuterie"
+                android:layout_width="207dp"
+                android:layout_height="56dp"
+                android:id="@+id/radioButton_charcuterie"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:layout_marginEnd="8dp"
+                app:layout_constraintStart_toStartOf="parent"
+                android:layout_marginStart="8dp"
+                app:layout_constraintHorizontal_bias="0.664"
+                android:layout_marginTop="60dp"
+                app:layout_constraintTop_toBottomOf="@+id/ajouter_quantite_et"
+                android:onClick="buttonclicked"
+                android:checked="true"/>
+        <RadioButton
+                android:text="Boisson"
+                android:layout_width="215dp"
+                android:layout_height="51dp"
+                android:id="@+id/radioButton_boisson" app:layout_constraintEnd_toEndOf="parent" android:layout_marginEnd="8dp"
+                app:layout_constraintStart_toStartOf="parent" android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp" app:layout_constraintTop_toBottomOf="@+id/radioButton_charcuterie"
+                android:layout_marginBottom="8dp" app:layout_constraintBottom_toTopOf="@+id/ajouter_btn"
+                app:layout_constraintHorizontal_bias="0.672" app:layout_constraintVertical_bias="0.077"
+                android:onClick="buttonclicked"/>
+        <RadioButton
+                android:text="Céréales"
+                android:layout_width="204dp"
+                android:layout_height="56dp"
+                android:id="@+id/radioButton_cereales"
+                android:layout_marginTop="5dp"
+                app:layout_constraintTop_toBottomOf="@+id/radioButton_boisson"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:layout_marginEnd="8dp"
+                app:layout_constraintStart_toStartOf="parent"
+                android:layout_marginStart="8dp"
+                android:layout_marginBottom="8dp"
+                app:layout_constraintBottom_toTopOf="@+id/ajouter_btn"
+                app:layout_constraintHorizontal_bias="0.656"
+                app:layout_constraintVertical_bias="0.0"
+                android:onClick="buttonclicked"/>
+
+    </RadioGroup>
+
+
+    <Button
+            android:text="Prendre une photo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/prendre_photo"
+            android:layout_marginTop="16dp"
+            app:layout_constraintTop_toBottomOf="@+id/ajouter_btn"
+            app:layout_constraintStart_toStartOf="parent"
+            android:layout_marginStart="132dp"/>
+
+
+</android.support.constraint.ConstraintLayout>

@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+
+    <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="395dp"
+            android:layout_height="587dp"
+            android:layout_marginTop="8dp"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            android:layout_marginStart="8dp">
+
+
+        <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="77dp">
+
+            <ImageView
+                    android:layout_width="16dp"
+                    android:layout_height="wrap_content"
+                    app:srcCompat="@drawable/croix_rouge"
+                    android:id="@+id/image_croix_rouge_detail"
+                    android:layout_weight="1"/>
+            <TextView
+                    android:text="TextView_produit"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:id="@+id/contenu_detail_tv"
+                    android:layout_weight="1"/>
+        </LinearLayout>
+        <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="116dp">
+
+            <TextView
+                    android:text="Quantité : "
+                    android:layout_width="100dp"
+                    android:layout_height="108dp"
+                    android:id="@+id/quantite_label_tv"
+                    android:layout_weight="1"/>
+            <TextView
+                    android:text="TextView_quantite"
+                    android:layout_width="wrap_content"
+                    android:layout_height="106dp"
+                    android:id="@+id/quantite_detail_tv"
+                    android:layout_weight="1"/>
+        </LinearLayout>
+        <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="121dp">
+
+            <TextView
+                    android:text="Date : "
+                    android:layout_width="wrap_content"
+                    android:layout_height="102dp"
+                    android:id="@+id/date_label_tv"
+                    android:layout_weight="1"/>
+            <TextView
+                    android:text="la Date de creation"
+                    android:layout_width="wrap_content"
+                    android:layout_height="102dp"
+                    android:id="@+id/date_detail_tv"
+                    android:layout_weight="1"/>
+        </LinearLayout>
+        <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="121dp">
+
+            <TextView
+                    android:text="@string/categorie_label"
+                    android:layout_width="wrap_content"
+                    android:layout_height="102dp"
+                    android:id="@+id/categorie_label_tv"
+                    android:layout_weight="1"/>
+            <TextView
+                    android:text="@string/la_categorie"
+                    android:layout_width="wrap_content"
+                    android:layout_height="102dp"
+                    android:id="@+id/categorie_detail_tv"
+                    android:layout_weight="1"/>
+        </LinearLayout>
+        <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+            <Button
+                    android:text="Modifier"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/modifier_btn"
+                    android:layout_weight="1"/>
+
+        </LinearLayout>
+
+    </LinearLayout>
+</android.support.constraint.ConstraintLayout>

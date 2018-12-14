@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item android:id="@+id/nav_charcuterie"
+          android:title="@string/charcuterie"
+          android:icon="@drawable/ic_search_white_24dp"
+    />
+
+    <item android:id="@+id/nav_boisson"
+          android:title="@string/boisson"
+          android:icon="@drawable/ic_search_white_24dp"
+    />
+
+    <item android:id="@+id/nav_cereales"
+          android:title="@string/cereales"
+          android:icon="@drawable/ic_search_white_24dp"
+    />
+</menu>
