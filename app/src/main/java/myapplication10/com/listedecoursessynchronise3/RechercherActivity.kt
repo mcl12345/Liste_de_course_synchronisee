@@ -6,25 +6,32 @@ import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.drawable.BitmapDrawable
+import android.net.ConnectivityManager
+import android.os.AsyncTask
 import android.os.Bundle
 import android.support.design.widget.FloatingActionButton
 import android.support.v4.content.res.ResourcesCompat
+import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.SearchView
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
-import android.widget.Button
-import android.widget.FrameLayout
-import android.widget.ImageView
-import android.widget.TextView
+import android.widget.*
 import kotlinx.android.synthetic.main.fragment_detail_linear_layout.*
+import org.jetbrains.anko.longToast
 import org.jetbrains.anko.startActivity
 import org.jetbrains.anko.toast
 import java.io.File
 import java.io.FileInputStream
 import java.io.FileNotFoundException
+import java.io.IOException
+import java.net.ConnectException
+import java.net.HttpURLConnection
+import java.net.URL
+import java.net.UnknownHostException
 
 class RechercherActivity : AppCompatActivity(), ListeFragment.Listener, DetailFragment.Listener {
 
@@ -34,6 +41,8 @@ class RechercherActivity : AppCompatActivity(), ListeFragment.Listener, DetailFr
     var listeFragment_to_delete : ListeFragment = ListeFragment()
     var maListeSearch = arrayListOf<Produit_DATA_CLASS?>()
 
+    var batterie_receiver = BatterieReceiver()
+
     var query :String = ""
     var identifiant:Int = 0         // L' id du produit qui est envoyé aux fragments
 
@@ -42,21 +51,19 @@ class RechercherActivity : AppCompatActivity(), ListeFragment.Listener, DetailFr
         setContentView(R.layout.activity_recherche)
 
         if(intent.action == Intent.ACTION_SEARCH) {
-            query = intent.getStringExtra(SearchManager.QUERY)
-            toast(query) // ce que l'utilisateur a tapé
-            // calculer et afficher les résultats ( RecyclerView ? )
+            query = intent.getStringExtra(SearchManager.QUERY) // Ce que l'utilisateur a tapé
         }
     }
 
     override fun onSelectionDetail(id: String, fragment_ : DetailFragment) {
         val bundle=intent.extras
 
-        toast("onSelectionDetail : id : " + id)
+        Log.e("onSelectionDetail:id:" , id.toString())
 
         if(bundle!=null) {
-            toast("bundle not null")
+            Log.e("bundle not null", "not null")
             if(bundle.getString("produit") != null) {
-                toast("bundle produit not null")
+                Log.e("bundle", "produit not null")
 
                 identifiant = Integer.parseInt(bundle.getString("produit").toString())
 
@@ -89,7 +96,7 @@ class RechercherActivity : AppCompatActivity(), ListeFragment.Listener, DetailFr
 
     fun mise_a_jour_detail_panel(id: String, fragment_ : DetailFragment) {
         identifiant = Integer.parseInt(id)
-        toast("onSelectionDetail : " + id)
+        Log.e("onSelectionDetail : " , id.toString())
 
         val btn_modifier: Button = findViewById(R.id.modifier_btn)
         val imageView_profile: ImageView = findViewById(R.id.image_croix_rouge_detail)
@@ -114,7 +121,7 @@ class RechercherActivity : AppCompatActivity(), ListeFragment.Listener, DetailFr
         }
 
         // Charge le Bitmap
-        toast("mise_a_jour_detail_panel : " + identifiant)
+        Log.e("maj_detail_panel:" , identifiant.toString())
         imageView_profile.setImageBitmap(loadBitmapFromStorage(identifiant))
     }
 
@@ -147,7 +154,7 @@ class RechercherActivity : AppCompatActivity(), ListeFragment.Listener, DetailFr
             toast("Click sur : ${it?.id.toString()} = ${it?.contenu}")
             if(fl != null) {
                 var fragment_detail : DetailFragment = DetailFragment.newInstance(it?.id.toString())
-                toast("tablette")
+                Log.e("tablette","tablette")
                 // On supprime le fragment précédent qui reste dessous le prochain
                 getSupportFragmentManager().beginTransaction().remove(detailFragment_to_delete).commit()
                 // Je sauvegarde le fragment pour le supprimer lors de l'appel d'un autre fragment
@@ -159,7 +166,7 @@ class RechercherActivity : AppCompatActivity(), ListeFragment.Listener, DetailFr
                 listeFragment_to_delete = ListeFragment()
                 supportFragmentManager.beginTransaction().replace(R.id.frame_layout_liste_search, listeFragment_to_delete).commit()
             } else {
-                toast("pas tablette")
+                Log.e("pas tablette", "pas tablette")
                 // Code qui s'exécute quand on touche un élément
                 // it = le Produit de la ligne touchée
                 val intent = Intent(this, DetailActivity::class.java)
@@ -185,7 +192,116 @@ class RechercherActivity : AppCompatActivity(), ListeFragment.Listener, DetailFr
                 startActivity<NotificationActivity>()
                 return true
             }
+            R.id.action_supprimer -> {
+                alertDialogDelete()
+                return true
+            }
+            R.id.appel -> {
+                val intent = Intent(this, AppelActivity::class.java)
+                intent.putExtra("partager", identifiant.toString())
+                startActivityForResult(intent, 3)
+                return true
+            }
             else -> return super.onOptionsItemSelected(item)
+        }
+    }
+
+    fun alertDialogDelete(){
+        val builder = AlertDialog.Builder(this@RechercherActivity)
+        //Set the alert dialog title
+        builder.setTitle("Confirmation de la suppression")
+        //Display a message on altert dialog
+        builder.setMessage("Etes-vous sûr de vouloir supprimer cet élément?")
+        //Set a positive button and its click listener on alert dialog
+        builder.setPositiveButton("Oui"){dialog, which ->
+            Toast.makeText(applicationContext,"supprimer cet élément.", Toast.LENGTH_SHORT).show()
+            //Delete this item
+            if(fl != null) {
+                var contenu = ProduitDAO(this).get(identifiant)!!.contenu
+                ProduitDAO(this).delete(identifiant)
+
+                // Delete en remote 213.32.90.43
+                if(batterie_receiver.is_low) {
+                    longToast("LOW BATTERY")
+                } else {
+                    // TP5 Slide 18 & 25
+                    // Récupère l'identifiant BDD -> identifiant_bdd qui est synchronisé pour chaque suppression et AJOUT
+                    val connMgr = getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+                    when (connMgr.activeNetworkInfo?.type) {
+                        ConnectivityManager.TYPE_WIFI, ConnectivityManager.TYPE_MOBILE -> {
+                            DownloadTask().execute(URL("http://213.32.90.43/android/delete.php?contenu="+contenu))
+                            Log.e("id delete DetailActivi", identifiant.toString())
+                        }
+                        null -> { toast("Pas de réseau ") }
+                    }
+                }
+
+                // Je quitte le DetailFragment
+                getSupportFragmentManager().beginTransaction().remove(detailFragment_to_delete).commit()
+                supportFragmentManager.beginTransaction().replace(R.id.frame_layout_liste, ListeFragment()).commit()
+            }
+            else {
+                var contenu = ProduitDAO(this).get(identifiant)!!.contenu
+                ProduitDAO(this).delete(identifiant)
+
+                // Delete en remote 213.32.90.43
+                if(batterie_receiver.is_low) {
+                    longToast("LOW BATTERY")
+                } else {
+                    // TP5 Slide 18 & 25
+                    // Récupère l'identifiant BDD -> identifiant_bdd qui est synchronisé pour chaque suppression et AJOUT
+                    val connMgr = getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+                    when (connMgr.activeNetworkInfo?.type) {
+                        ConnectivityManager.TYPE_WIFI, ConnectivityManager.TYPE_MOBILE -> {
+                            DownloadTask().execute(URL("http://213.32.90.43/android/delete.php?contenu="+contenu))
+                            Log.e("id delete DetailActivi", identifiant.toString())
+                        }
+                        null -> { toast("Pas de réseau ") }
+                    }
+                }
+                finish()
+            }
+        }
+        //Display a negative button on alert dialog
+        builder.setNegativeButton("Non"){dialog, which ->
+            Toast.makeText(applicationContext, "Vous n'êtes pas d'accord.", Toast.LENGTH_SHORT).show()
+        }
+        //Display a neutral button on alert dialog
+        builder.setNeutralButton("Annuler"){_,_ ->
+            Toast.makeText(applicationContext,"Vous annulez ce dialog.", Toast.LENGTH_SHORT).show()
+        }
+        //Finally, make the alert dialog using builder
+        val dialog: AlertDialog = builder.create()
+        //Display the alert dialog on app interface
+        dialog.show()
+    }
+
+    // Code venant de ce site :
+    // FROM http://tutorielandroid.francoiscolin.fr/recupjson.php
+    inner class DownloadTask : AsyncTask<URL, Void, Boolean>() {
+        override fun doInBackground(vararg params: URL): Boolean?  {
+            try {
+                val conn = params[0].openConnection() as HttpURLConnection
+                conn.connect()
+                if(conn.responseCode != HttpURLConnection.HTTP_OK) {
+                    return null
+                } else {
+                    return true
+                }
+            } catch (e : FileNotFoundException) {
+                return null
+            } catch (e : UnknownHostException) {
+                return null
+            } catch (e : ConnectException) {
+                return null
+            } catch (e : IOException) {
+                return null
+            }
+        }
+
+        override fun onPostExecute(result: Boolean) {
+            super.onPostExecute(result)
+            Log.e("AFFICHER", result.toString())
         }
     }
 

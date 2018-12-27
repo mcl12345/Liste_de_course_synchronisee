@@ -11,6 +11,7 @@ import android.support.v7.app.AppCompatActivity
 import org.jetbrains.anko.makeCall
 import org.jetbrains.anko.sendSMS
 import org.jetbrains.anko.toast
+import android.util.Log
 
 class AppelActivity : AppCompatActivity() {
 
@@ -22,17 +23,21 @@ class AppelActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        toast("onCreate")
+        
+        Log.e("onCreate", "onCreate")
+        
         if (ContextCompat.checkSelfPermission( this, android.Manifest.permission.CALL_PHONE ) == PackageManager.PERMISSION_GRANTED) {
             // Va chercher un contact
-            toast("onCreate permission ok")
+            Log.e("onCreate permission", "ok")
+            
             val intentContact = Intent(Intent.ACTION_PICK)
             intentContact.type = ContactsContract.CommonDataKinds.Phone.CONTENT_TYPE
             if(intentContact.resolveActivity(packageManager) != null) {
                 startActivityForResult(intentContact, 43)
             }
         } else {
-            toast("onCreate permission nok")
+            Log.e("onCreate permission", "nok")
+            
             // On demande la permission
             ActivityCompat.requestPermissions( this, arrayOf(Manifest.permission.CALL_PHONE),1)
         }
@@ -58,7 +63,7 @@ class AppelActivity : AppCompatActivity() {
                         with(contentResolver.query(data?.data, arrayOf(ContactsContract.CommonDataKinds.Phone.NUMBER),null,null,null)) {
                             moveToFirst()
                             val telephone = getString(0)
-                            toast(telephone)
+                            Log.e("telephone" , telephone)
                         }
                         //makeCall(phone_number)
 

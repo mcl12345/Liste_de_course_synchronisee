@@ -41,7 +41,7 @@ class NotificationActivity : AppCompatActivity() {
                 date = buttonclicked(radio_button_quinze_minutes)
             }
 
-            with(sp.edit()){
+            with(sp.edit()) {
                 putString(PREF_DATE, date)
                 apply()
             }

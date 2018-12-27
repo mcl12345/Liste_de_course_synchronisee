@@ -168,7 +168,7 @@ class MainActivity : AppCompatActivity(), ListeFragment.Listener, DetailFragment
             toast("Click sur : ${it?.id.toString()} = ${it?.contenu}")
             if(fl != null) {
                 var fragment_detail : DetailFragment = newInstance(it?.id.toString())
-                toast("tablette")
+                Log.e("tablette", "tablette")
                 // On supprime le fragment précédent qui reste dessous le prochain
                 getSupportFragmentManager().beginTransaction().remove(detailFragment_to_delete).commit()
                 // Je sauvegarde le fragment pour le supprimer lors de l'appel d'un autre fragment
@@ -180,7 +180,7 @@ class MainActivity : AppCompatActivity(), ListeFragment.Listener, DetailFragment
                 listeFragment_to_delete = ListeFragment()
                 supportFragmentManager.beginTransaction().replace(R.id.frame_layout_liste, listeFragment_to_delete).commit()
             } else {
-                toast("pas tablette")
+                Log.e("pas tablette", "pas de tablette")
                 // Code qui s'exécute quand on touche un élément
                 // it = le Produit de la ligne touchée
                 val intent = Intent(this, DetailActivity::class.java)
@@ -204,6 +204,28 @@ class MainActivity : AppCompatActivity(), ListeFragment.Listener, DetailFragment
         toggle.syncState()
         // Gère la slide-bar
         nav_view.setNavigationItemSelectedListener(this)
+
+        // Get data from the remote database : http://213.32.90.43/android
+        if(batterie_receiver.is_low) {
+            Log.e("LOW BATTERY", "LOW BATTERY")
+        } else {
+            // TP5 Slide 18 & 25
+            // Récupère l'identifiant BDD -> identifiant_bdd qui est synchronisé pour chaque suppression et AJOUT
+            val connMgr = getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+            when (connMgr.activeNetworkInfo?.type) {
+                ConnectivityManager.TYPE_WIFI, ConnectivityManager.TYPE_MOBILE -> {
+                    // Delete all the list :
+                    for (i in 1..1000) {
+                        if (ProduitDAO(this).get(i) != null) {
+                            Log.e("DELETE MainActivity", i.toString())
+                            ProduitDAO(this).delete(i)
+                        }
+                    }
+                    DownloadTask().execute(URL("http://213.32.90.43/android/select_all.php"))
+                }
+                null -> { toast("Pas de réseau ") }
+            }
+        }
     }
 
     override fun onBackPressed() {
@@ -282,68 +304,47 @@ class MainActivity : AppCompatActivity(), ListeFragment.Listener, DetailFragment
         }
 
 
-         // Configuration de l' AlarmAjoutReceiver
-         // ------------------------------------------------------------
-         val confirmation = sp.getBoolean(ProgrammationAjoutActivity.PREF_CONFIRMATION_PROGRAMMATION, false)
-         if(confirmation == true ) {
-             val mgr_ajout = getSystemService(Context.ALARM_SERVICE) as AlarmManager
-             val intent_ajout = Intent(this, AlarmAjoutReceiver::class.java)
-             val alarmIntent_ajout = PendingIntent.getBroadcast(this, 43, intent_ajout, 0)
-             val date_programmation = sp.getString(ProgrammationAjoutActivity.PREF_DATE_PROGRAMMATION, "null")
+        // Configuration de l' AlarmAjoutReceiver
+        // ------------------------------------------------------------
+        val confirmation = sp.getBoolean(ProgrammationAjoutActivity.PREF_CONFIRMATION_PROGRAMMATION, false)
+        if(confirmation == true ) {
+            val mgr_ajout = getSystemService(Context.ALARM_SERVICE) as AlarmManager
+            val intent_ajout = Intent(this, AlarmAjoutReceiver::class.java)
+            val alarmIntent_ajout = PendingIntent.getBroadcast(this, 43, intent_ajout, 0)
+            val date_programmation = sp.getString(ProgrammationAjoutActivity.PREF_DATE_PROGRAMMATION, "null")
 
-             if (date_programmation != "null") {
-                 // TP5 Slide 37
-                 // registerReceiver enregistre les 2 : BatterieReceiver et l'intentFilter
-                 val intentFilter = IntentFilter(Intent.ACTION_BATTERY_CHANGED)
-                 registerReceiver(batterie_receiver, intentFilter)
-             }
-             if (date_programmation == "une_minute") {
-                 val calendar = Calendar.getInstance()
-                 calendar.add(Calendar.DAY_OF_MONTH, 0)
-                 calendar.add(Calendar.HOUR_OF_DAY, 0)
-                 calendar.add(Calendar.MINUTE, 1)
-                 mgr_ajout.set(AlarmManager.RTC_WAKEUP, calendar.timeInMillis, alarmIntent_ajout)
-             } else if (date_programmation == "cinq_minutes") {
-                 val calendar = Calendar.getInstance()
-                 calendar.add(Calendar.DAY_OF_MONTH, 0)
-                 calendar.add(Calendar.HOUR_OF_DAY, 0)
-                 calendar.add(Calendar.MINUTE, 5)
-                 mgr_ajout.set(AlarmManager.RTC_WAKEUP, calendar.timeInMillis, alarmIntent_ajout)
-             } else if (date_programmation == "quinze_minutes") {
-                 val calendar = Calendar.getInstance()
-                 calendar.add(Calendar.DAY_OF_MONTH, 0)
-                 calendar.add(Calendar.HOUR_OF_DAY, 0)
-                 calendar.add(Calendar.MINUTE, 15)
-                 mgr_ajout.set(AlarmManager.RTC_WAKEUP, calendar.timeInMillis, alarmIntent_ajout)
-             }
-             // For the onResume of MainActivity
-             with(sp.edit()){
-                 putBoolean(ProgrammationAjoutActivity.PREF_CONFIRMATION_PROGRAMMATION, false)
-                 apply()
-             }
-        }
-
-        // Get data from the remote database : http://213.32.90.43/android
-        if(batterie_receiver.is_low) {
-            longToast("LOW BATTERY")
-        } else {
-            // TP5 Slide 18 & 25
-            // Récupère l'identifiant BDD -> identifiant_bdd qui est synchronisé pour chaque suppression et AJOUT
-            val connMgr = getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-            when (connMgr.activeNetworkInfo?.type) {
-                ConnectivityManager.TYPE_WIFI, ConnectivityManager.TYPE_MOBILE -> {
-                    // Delete all the list :
-                    for (i in 1..1000) {
-                        if (ProduitDAO(this).get(i) != null) {
-                            Log.e("DELETE MainActivity", i.toString())
-                            ProduitDAO(this).delete(i)
-                        }
-                    }
-                    DownloadTask().execute(URL("http://213.32.90.43/android/select_all.php"))
-                }
-                null -> { toast("Pas de réseau ") }
+            if (date_programmation != "null") {
+                // TP5 Slide 37
+                // registerReceiver enregistre les 2 : BatterieReceiver et l'intentFilter
+                val intentFilter = IntentFilter(Intent.ACTION_BATTERY_CHANGED)
+                registerReceiver(batterie_receiver, intentFilter)
+            }
+            if (date_programmation == "une_minute") {
+                val calendar = Calendar.getInstance()
+                calendar.add(Calendar.DAY_OF_MONTH, 0)
+                calendar.add(Calendar.HOUR_OF_DAY, 0)
+                calendar.add(Calendar.MINUTE, 1)
+                mgr_ajout.set(AlarmManager.RTC_WAKEUP, calendar.timeInMillis, alarmIntent_ajout)
+            } else if (date_programmation == "cinq_minutes") {
+                val calendar = Calendar.getInstance()
+                calendar.add(Calendar.DAY_OF_MONTH, 0)
+                calendar.add(Calendar.HOUR_OF_DAY, 0)
+                calendar.add(Calendar.MINUTE, 5)
+                mgr_ajout.set(AlarmManager.RTC_WAKEUP, calendar.timeInMillis, alarmIntent_ajout)
+            } else if (date_programmation == "quinze_minutes") {
+                val calendar = Calendar.getInstance()
+                calendar.add(Calendar.DAY_OF_MONTH, 0)
+                calendar.add(Calendar.HOUR_OF_DAY, 0)
+                calendar.add(Calendar.MINUTE, 15)
+                mgr_ajout.set(AlarmManager.RTC_WAKEUP, calendar.timeInMillis, alarmIntent_ajout)
+            }
+            // For the onResume of MainActivity
+            with(sp.edit()){
+                putBoolean(ProgrammationAjoutActivity.PREF_CONFIRMATION_PROGRAMMATION, false)
+                apply()
             }
         }
+
     }
 
     override fun onCreateOptionsMenu(menu : Menu) : Boolean {
@@ -449,13 +450,13 @@ class MainActivity : AppCompatActivity(), ListeFragment.Listener, DetailFragment
     fun savetoBDD(contenu: String, quantite: String, categorie: String, la_date: String, id_image: Int) {
         // Introduit tous les éléments du serveur à distance
         var produit = Produit_DATA_CLASS(
-                identifiant,
-                contenu,
-                quantite,
-                categorie,
-                la_date,
-                loadBitmapFromStorage(id_image),
-                id_image)
+            identifiant,
+            contenu,
+            quantite,
+            categorie,
+            la_date,
+            loadBitmapFromStorage(id_image),
+            id_image)
         // Insertion dans la bdd
         identifiant = ProduitDAO(this).insert(produit)!!.toInt() + 1
     }
@@ -476,7 +477,7 @@ class MainActivity : AppCompatActivity(), ListeFragment.Listener, DetailFragment
 
                 // Delete en remote 213.32.90.43
                 if(batterie_receiver.is_low) {
-                    longToast("LOW BATTERY")
+                    Log.e("LOW BATTERY", "LOW_BATTERY")
                 } else {
                     // TP5 Slide 18 & 25
                     // Récupère l'identifiant BDD -> identifiant_bdd qui est synchronisé pour chaque suppression et AJOUT
@@ -500,7 +501,7 @@ class MainActivity : AppCompatActivity(), ListeFragment.Listener, DetailFragment
 
                 // Delete en remote 213.32.90.43
                 if(batterie_receiver.is_low) {
-                    longToast("LOW BATTERY")
+                    Log.e("LOW BATTERY", "LOW_BATTERY")
                 } else {
                     // TP5 Slide 18 & 25
                     // Récupère l'identifiant BDD -> identifiant_bdd qui est synchronisé pour chaque suppression et AJOUT
